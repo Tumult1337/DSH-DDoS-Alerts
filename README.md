@@ -19,4 +19,4 @@ node alerts.js
 > The default time for the requests is 45 seconds with 1 second delay between each IP
 > You can get the api token via ticket https://dsh.gg/ticket (i recommen an external server to run the script as the api has a whitelist)
 
-### ONLY TESTED WITH PATH IPs
+### ONLY TESTED WITH DSH-PATH-IPs
