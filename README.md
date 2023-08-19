@@ -20,9 +20,7 @@ chmod +x alerts.sh
 
 ## Usage
 1. Start the script in a screen:
-   `bash
-     bash start.sh
-   `
+   `bash start.sh`
 
 - The script will periodically check for DDoS attack incidents and send notifications to the specified Discord channels.
 
