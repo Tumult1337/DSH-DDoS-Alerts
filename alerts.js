@@ -1,26 +1,26 @@
-const TOKEN = 'DSH-.....................';
+const TOKEN = '';
+var delay = 90; //in secs
 const API_REQ_IPS = [
-	['IP', "DiscordUID", "https://discord.com/api/webhooks/....................."],
-	['IP2', "DiscordUID2", "https://discord.com/api/webhooks/.....................2"],
+	['ip1', "discordUID1", "https://discord.com/api/webhooks/1"],
+	['ip2', "discordUID2", "https://discord.com/api/webhooks/2"],
 ];
-var delay = 45; //in secs
+
 /////////////////////////////////////////////////////////////////
 const XMLHttpRequest = require("xhr2")
-
-delay = (delay * 1000)-1000;
+delay = (delay * 1000);
 
 const APIurl = 'https://api.dsh.gg/api/v2/protection/incidents/';
 var lastDDoS = [];
 var thisDDoS = [];
 var sentEndOfAttack = [];
-var ppsPeakLast = [];
+//var ppsPeakLast = [];
 var bpsPeakLast = [];
 for (i = 0; i < API_REQ_IPS.length; i++) {
 	lastDDoS[i] = '';
 	thisDDoS[i] = '';
 	sentEndOfAttack[i] = '';
 	bpsPeakLast[i] = '';
-	ppsPeakLast[i] = '';
+	//ppsPeakLast[i] = '';
 }
 
 function GetTime() {
@@ -33,7 +33,7 @@ function sendMessage(sendthis, ipIndex, state) {
 	xhr.setRequestHeader('Content-type', 'application/json');
 	if (!state) { var cont = `<@${API_REQ_IPS[ipIndex][1]}>` }
 	const params = {
-		content: cont || "",
+		content: cont || "", //not sure if i need something
 		username: "Skid Alert",
 		avatar_url: 'https://check-host.net/images/mainlogo.png',
 		embeds: [sendthis]
@@ -145,11 +145,11 @@ function httpGet(url, ipIndex) {
 			const dcValue = getDiscordWebhookFormat(response, ipIndex);
 			if (!dcValue) { return; }			
 			if (lastDDoS[ipIndex] == thisDDoS[ipIndex]) {
-				if (ppsPeakLast[ipIndex] == response['peak_pps']['value'] && bpsPeakLast[ipIndex] == response['peak_bps']['value']) {
+				if (bpsPeakLast[ipIndex] == response['peak_bps']['value']) { //&& ppsPeakLast[ipIndex] == response['peak_pps']['value']) {
 					console.log(log + thisDDoS[ipIndex] + " | " + API_REQ_IPS[ipIndex][0] + " | Attack still in progress...");
 					return;
 				}
-				ppsPeakLast[ipIndex] = response['peak_pps']['value'];
+				//ppsPeakLast[ipIndex] = response['peak_pps']['value'];
 				bpsPeakLast[ipIndex] = response['peak_bps']['value'];
 				console.log(log + thisDDoS[ipIndex] + " | " + API_REQ_IPS[ipIndex][0] + " | New Peak, still ongoing");
 				sendMessage(getDiscordWebhookFormat(response, ipIndex, "update"), ipIndex, "update");
@@ -158,7 +158,7 @@ function httpGet(url, ipIndex) {
 			console.log(log + thisDDoS[ipIndex] + " | " + API_REQ_IPS[ipIndex][0]);
 			console.log(response);
 			lastDDoS[ipIndex] = thisDDoS[ipIndex];
-			ppsPeakLast[ipIndex] = response['peak_pps']['value'];
+			//ppsPeakLast[ipIndex] = response['peak_pps']['value'];
 			bpsPeakLast[ipIndex] = response['peak_bps']['value'];
 			sendMessage(dcValue, ipIndex);	   
 			sentEndOfAttack[ipIndex] = false;	 
@@ -173,16 +173,16 @@ for (i = 0; i < API_REQ_IPS.length; i++) {
 }
 
 function CallItself() {
-	try {	
-		setTimeout(function() {
-			CallItself();
+	setTimeout(function() {			
+		try {	
 			for (i = 0; i < API_REQ_IPS.length; i++) {
-				setTimeout(httpGet, i*1000, APIurl + API_REQ_IPS[i][0], i);
+				setTimeout(httpGet, i*666, APIurl + API_REQ_IPS[i][0], i);
 			}
-		}, delay);
-	} catch (e) {
-		console.log(e);
-	}
+		} catch (e) {
+			console.log(e)
+		}
+		CallItself();
+	}, delay);
 }
 CallItself();
 
